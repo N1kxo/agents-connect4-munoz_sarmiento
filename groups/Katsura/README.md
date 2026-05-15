@@ -1,6 +1,6 @@
 # Katsura 🌸 — MCTS Agent for Connect-4
 
-**Author:** [Tu nombre]  
+**Author:** Nicolas Esteban Muñoz Sendoya 
 **Course:** Fundamentos de Inteligencia Artificial — Universidad de La Sabana, 2026.1
 
 ---
