@@ -279,7 +279,7 @@ class Katsura(Policy):
         self.rollout_policy = rollout_policy
 
     @override
-    def mount(self) -> None:
+    def mount(self, timeout=None) -> None:
         """No offline training needed – MCTS works fully online."""
         pass
 
