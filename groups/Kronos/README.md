@@ -1,64 +1,80 @@
-# Kronos — Connect-4 Agent
+# Kronos — Agente Connect-4
 
-> _"El que controla el tiempo, controla el juego."_
-
-**Estrategia:** Minimax con poda Alfa-Beta + Q-Learning online sobre pesos heurísticos  
-**Diferenciador:** A diferencia de un agente de búsqueda puro, Kronos _aprende_ qué rasgos del tablero son más relevantes contra cada oponente, ajustando sus pesos heurísticos durante la partida mediante TD(0).
+**Agente desarrollado para el reto de Fundamentos de Inteligencia Artificial, Universidad de La Sabana, 2026.1**
 
 ---
 
-## Arquitectura
+## Idea principal
 
-```
-Kronos
-├── Minimax con poda α-β  ─── búsqueda del mejor movimiento
-│     └── Heurística lineal: w · φ(s)
-│           φ(s) = [centro, ventanas, 2-en-raya, 3-en-raya, amenaza-oponente]
-└── Q-Learning online ────── actualiza w tras cada movimiento
-      Δw = α · δ · ∇φ    donde δ = V(s') - V(s)
-```
+Kronos es un agente basado en **Alternating Markov Game** que aprende a jugar Connect-4 mediante **self-play con First-Visit Monte Carlo (FVMC)** y **exploración proporcional a q̂** (win-probability-guided exploration). No usa MCTS ni UCB.
 
-## Parámetros configurables ("tornillos")
+### Fundamentos teóricos (slides del curso)
 
-| Parámetro          | Default | Efecto                                                             |
-| ------------------ | ------- | ------------------------------------------------------------------ |
-| `depth`            | 4       | Profundidad del minimax — más profundo = más fuerte pero más lento |
-| `use_q_learning`   | True    | Activa/desactiva el módulo de aprendizaje online                   |
-| `learning_rate`    | 0.05    | α — qué tan rápido cambian los pesos                               |
-| `exploration_rate` | 0.05    | ε — fracción de movimientos aleatorios (exploración)               |
-| `seed`             | 42      | Semilla RNG para reproducibilidad                                  |
+| Concepto | Slide | Aplicación en Kronos |
+|---|---|---|
+| Alternating Markov Game | 12 | Self-play: ambos jugadores comparten y sincronizan la Q-table en cada trial |
+| First-Visit Monte Carlo (FVMC) | 11 | Estima q̂(s,a) con retornos descontados de la primera visita a cada (s,a) |
+| Exploración proporcional a q̂ | 12 | π(a\|s) = q̂(s,a) / Σ q̂(s,a') — focaliza exploración en estados ganadores |
+| Reward Shaping | 11 | Recompensa intermedia por amenazas de 3-en-raya para guiar aprendizaje |
+| Simetría horizontal | — | Canonicaliza tablero (min de original y espejo) → espacio de estados ÷2 |
 
-## Uso rápido
+### Lo que distingue a Kronos
 
-```python
-from Kronos.policy import Kronos
+- **No MCTS, no UCB**: la exploración es puramente proporcional al valor q̂ estimado.
+- **Self-play sincronizado** (Alternating Markov Game): 1 trial actualiza ambos jugadores simultáneamente, no k trials para k agentes.
+- **Simetría de tablero**: reduce el espacio de estados efectivo a la mitad sin pérdida de información.
+- **Aprendizaje online**: al terminar cada partida real, actualiza q̂ con el resultado verdadero (tasa α).
 
-# Instancia para torneo (configuración final recomendada)
-agent = Kronos(depth=3, use_q_learning=True, exploration_rate=0.0)
-agent.mount()   # llamar antes de cada partida
-
-# Durante la partida
-col = agent.act(board)   # board: np.ndarray (6×7)
-```
+---
 
 ## Estructura de archivos
 
 ```
-Kronos/
-├── policy.py          ← Agente completo
-entrega.ipynb          ← Análisis experimental y gráficas
-README.md              ← readme
+kronos/
+├── policy.py          # Clase Kronos (política principal)
+├── kronos_q.pkl       # Q-table entrenada (se genera al primer mount())
+├── entrega.ipynb      # Notebook con experimentos y gráficas
+└── README.md          # Este archivo
 ```
+
+---
+
+## Uso
+
+```python
+from policy import Kronos
+
+agente = Kronos(
+    episodes=6000,          # episodios de self-play offline
+    shaping_weight=0.05,    # peso del reward shaping
+    exploration_temp=1.0,   # temperatura de exploración
+    online_alpha=0.05,      # aprendizaje online
+)
+agente.mount()              # carga o entrena la Q-table
+col = agente.act(board)     # juega
+agente.observe_result(winner)  # actualización online (opcional)
+```
+
+### Variantes configurables
+
+| Parámetro | Descripción | Efecto esperado |
+|---|---|---|
+| `episodes` | Episodios de entrenamiento offline | Más → mejor desempeño, más tiempo |
+| `shaping_weight` | Peso del reward shaping | Más → más agresivo en ataque/bloqueo |
+| `exploration_temp` | Temperatura softmax | Más baja → más greedy durante training |
+| `online_alpha` | Tasa aprendizaje online | Más alto → aprende más rápido del oponente |
+
+---
 
 ## Requisitos
 
 ```
 numpy
-matplotlib
+pickle (stdlib)
 ```
 
-## Resultados mínimos verificados
+---
 
-- Nunca pierde contra jugador aleatorio (0 derrotas en 60+ partidas por color)
-- Gana ≥50% contra aleatorio (win rate observado: **100%** con depth ≥ 1)
-- Diferente a agentes del grupo en al menos un aspecto conceptual (Q-Learning adaptativo)
+## Enlace al repositorio
+
+> *[Insertar URL del branch aquí]*
