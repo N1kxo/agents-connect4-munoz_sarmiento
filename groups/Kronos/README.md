@@ -6,17 +6,17 @@
 
 ## Idea principal
 
-Kronos es un agente basado en **Alternating Markov Game** que aprende a jugar Connect-4 mediante **self-play con First-Visit Monte Carlo (FVMC)** y **exploración proporcional a q̂** (win-probability-guided exploration). 
+Kronos es un agente basado en **Alternating Markov Game** que aprende a jugar Connect-4 mediante **self-play con First-Visit Monte Carlo (FVMC)** y **exploración proporcional a q̂** (win-probability-guided exploration).
 
-### Fundamentos teóricos 
+### Fundamentos teóricos
 
-| Concepto | Aplicación en Kronos |
-|---|---|---|
-| Alternating Markov Game | Self-play: ambos jugadores comparten y sincronizan la Q-table en cada trial |
-| First-Visit Monte Carlo (FVMC) | Estima q̂(s,a) con retornos descontados de la primera visita a cada (s,a) |
-| Exploración proporcional a q̂ | π(a\|s) = q̂(s,a) / Σ q̂(s,a') — focaliza exploración en estados ganadores |
-| Reward Shaping | Recompensa intermedia por amenazas de 3-en-raya para guiar aprendizaje |
-| Simetría horizontal | Canonicaliza tablero (min de original y espejo) → espacio de estados ÷2 |
+| Concepto                       | Aplicación en Kronos                                                        |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| Alternating Markov Game        | Self-play: ambos jugadores comparten y sincronizan la Q-table en cada trial |
+| First-Visit Monte Carlo (FVMC) | Estima q̂(s,a) con retornos descontados de la primera visita a cada (s,a)    |
+| Exploración proporcional a q̂   | π(a\|s) = q̂(s,a) / Σ q̂(s,a') — focaliza exploración en estados ganadores    |
+| Reward Shaping                 | Recompensa intermedia por amenazas de 3-en-raya para guiar aprendizaje      |
+| Simetría horizontal            | Canonicaliza tablero (min de original y espejo) → espacio de estados ÷2     |
 
 ### Lo que distingue a Kronos
 
@@ -56,12 +56,12 @@ agente.observe_result(winner)  # actualización online (opcional)
 
 ### Variantes configurables
 
-| Parámetro | Descripción | Efecto esperado |
-|---|---|---|
-| `episodes` | Episodios de entrenamiento offline | Más → mejor desempeño, más tiempo |
-| `shaping_weight` | Peso del reward shaping | Más → más agresivo en ataque/bloqueo |
-| `exploration_temp` | Temperatura softmax | Más baja → más greedy durante training |
-| `online_alpha` | Tasa aprendizaje online | Más alto → aprende más rápido del oponente |
+| Parámetro          | Descripción                        | Efecto esperado                            |
+| ------------------ | ---------------------------------- | ------------------------------------------ |
+| `episodes`         | Episodios de entrenamiento offline | Más → mejor desempeño, más tiempo          |
+| `shaping_weight`   | Peso del reward shaping            | Más → más agresivo en ataque/bloqueo       |
+| `exploration_temp` | Temperatura softmax                | Más baja → más greedy durante training     |
+| `online_alpha`     | Tasa aprendizaje online            | Más alto → aprende más rápido del oponente |
 
 ---
 
@@ -76,4 +76,4 @@ pickle (stdlib)
 
 ## Enlace al repositorio
 
-> *(https://github.com/N1kxo/agents-connect4-munoz_sarmiento)*
+> _(https://github.com/N1kxo/agents-connect4-munoz_sarmiento)_
