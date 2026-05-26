@@ -6,21 +6,20 @@
 
 ## Idea principal
 
-Kronos es un agente basado en **Alternating Markov Game** que aprende a jugar Connect-4 mediante **self-play con First-Visit Monte Carlo (FVMC)** y **exploración proporcional a q̂** (win-probability-guided exploration). No usa MCTS ni UCB.
+Kronos es un agente basado en **Alternating Markov Game** que aprende a jugar Connect-4 mediante **self-play con First-Visit Monte Carlo (FVMC)** y **exploración proporcional a q̂** (win-probability-guided exploration). 
 
-### Fundamentos teóricos (slides del curso)
+### Fundamentos teóricos 
 
-| Concepto | Slide | Aplicación en Kronos |
+| Concepto | Aplicación en Kronos |
 |---|---|---|
-| Alternating Markov Game | 12 | Self-play: ambos jugadores comparten y sincronizan la Q-table en cada trial |
-| First-Visit Monte Carlo (FVMC) | 11 | Estima q̂(s,a) con retornos descontados de la primera visita a cada (s,a) |
-| Exploración proporcional a q̂ | 12 | π(a\|s) = q̂(s,a) / Σ q̂(s,a') — focaliza exploración en estados ganadores |
-| Reward Shaping | 11 | Recompensa intermedia por amenazas de 3-en-raya para guiar aprendizaje |
-| Simetría horizontal | — | Canonicaliza tablero (min de original y espejo) → espacio de estados ÷2 |
+| Alternating Markov Game | Self-play: ambos jugadores comparten y sincronizan la Q-table en cada trial |
+| First-Visit Monte Carlo (FVMC) | Estima q̂(s,a) con retornos descontados de la primera visita a cada (s,a) |
+| Exploración proporcional a q̂ | π(a\|s) = q̂(s,a) / Σ q̂(s,a') — focaliza exploración en estados ganadores |
+| Reward Shaping | Recompensa intermedia por amenazas de 3-en-raya para guiar aprendizaje |
+| Simetría horizontal | Canonicaliza tablero (min de original y espejo) → espacio de estados ÷2 |
 
 ### Lo que distingue a Kronos
 
-- **No MCTS, no UCB**: la exploración es puramente proporcional al valor q̂ estimado.
 - **Self-play sincronizado** (Alternating Markov Game): 1 trial actualiza ambos jugadores simultáneamente, no k trials para k agentes.
 - **Simetría de tablero**: reduce el espacio de estados efectivo a la mitad sin pérdida de información.
 - **Aprendizaje online**: al terminar cada partida real, actualiza q̂ con el resultado verdadero (tasa α).
@@ -77,4 +76,4 @@ pickle (stdlib)
 
 ## Enlace al repositorio
 
-> *[Insertar URL del branch aquí]*
+> *(https://github.com/N1kxo/agents-connect4-munoz_sarmiento)*
